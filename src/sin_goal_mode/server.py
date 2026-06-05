@@ -230,8 +230,14 @@ def _get_mcp() -> FastMCP:
     """Return the initialized FastMCP application with registered tools."""
     _init_state()
     mcp = FastMCP("sin_goal_mode")
-    for tool_fn in TOOLS.values():
-        mcp.tool(tool_fn)
+    # fastmcp 3.x: tools are registered via add_tool, not mcp.tool(fn)
+    if hasattr(mcp, "add_tool"):
+        for name, tool_fn in TOOLS.items():
+            mcp.add_tool(name=name, description=(tool_fn.__doc__ or "").strip(), fn=tool_fn)
+    else:
+        # Fallback for fastmcp 0.x/1.x/2.x
+        for tool_fn in TOOLS.values():
+            mcp.tool(tool_fn)
     return mcp
 
 
