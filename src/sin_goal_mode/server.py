@@ -111,7 +111,7 @@ def goal_list(filter_status: str = "") -> str:
         payload.append({
             "id": g.id,
             "title": g.title,
-            "status": g.status.value,
+            "status": getattr(g.status, "value", g.status),
             "progress_pct": g.progress_pct(),
             "subtasks": len(g.subtasks),
             "updated_at": g.updated_at,
